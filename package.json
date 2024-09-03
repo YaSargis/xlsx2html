@@ -1,0 +1,29 @@
+{
+  "name": "xlsx2html",
+  "version": "1.0.1",
+  "description": "js module for convert xlsx file to html",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YaSargis/xlsx2html.git"
+  },
+  "keywords": [
+    "nodejs",
+    "js",
+    "xlsx",
+    "html",
+    "xlsx2html"
+  ],
+  "author": "Sargis Kazaryan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/YaSargis/xlsx2html/issues"
+  },
+  "homepage": "https://github.com/YaSargis/xlsx2html#readme",
+  "dependencies": {
+    "exceljs": "^4.4.0"
+  }
+}
