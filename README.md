@@ -2,7 +2,7 @@
 
 
 ## Getting started
-### Module convert xlsx to html 
+### Module convert xlsx to html with saving styles 
 
 #### Install:
 `npm i xlsx2html`
