@@ -273,7 +273,6 @@ const xlsx2html = async (fileBytes, sheetName) => {
 	await workbook.xlsx.load(fileBytes);
 
 	const worksheet = workbook.getWorksheet(sheetName || 1);
-	console.log(`Processing worksheet: ${worksheet}`);
 	const data = await worksheetToData(worksheet);
 	const htmlTable = renderTable(data);
 
