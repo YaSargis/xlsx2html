@@ -162,7 +162,7 @@ const worksheetToData = async (worksheet) => {
 				excludedCells.has(`${colNumber}-${rowNumber}`) && 
 				!mergedCellMap[cellAddress]
 			) ){
-
+				if (cell.value.result == undefined) {
 				const cellData = {
 					column: colNumber,
 					row: rowNumber,
@@ -178,19 +178,37 @@ const worksheetToData = async (worksheet) => {
 				// Set cell styles
 				cellData.style.height = `${worksheet.getRow(rowNumber).height || 19}px`;
 				dataRow.push(cellData);
+				}
+				else {
+					const cellData = {
+					column: colNumber,
+					row: rowNumber,
+					value: cell.value.result || '',
+					formattedValue: cell.value.result || '',
+					attrs: {
+						id: `${worksheet.name}!${cellAddress}`,
+						...(mergedCellMap[cellAddress] ? mergedCellMap[cellAddress].attrs : {}),
+					},
+					style: mergedCellMap[cellAddress] ? mergedCellMap[cellAddress].style : getStylesFromCell(cell),
+				};
+
+				// Set cell styles
+				cellData.style.height = `${worksheet.getRow(rowNumber).height || 19}px`;
+				dataRow.push(cellData);
+				}
 			} 
 		});
 	});
 
-	const nonEmptyColumns = new Set();  // Набор для отслеживания непустых столбцов
+	const nonEmptyColumns = new Set();  // Set for tracking non-empty columns
 
-	// Первый проход: определяем, какие столбцы непустые
+	// First pass: determine which columns are non-empty
 	worksheet.eachRow((row, rowNumber) => {
 		row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
 			const cellValue = cell.value || '';
         const cellStyles = getStylesFromCell(cell);
 
-        // Проверяем, есть ли значение или стили у ячейки, или она является частью объединённой ячейки
+        // Check if the cell has a value, styles, or is part of a merged cell
         if (cellValue !== '' || mergedCellMap[cell.address] || Object.keys(cellStyles).length > 0) {
             nonEmptyColumns.add(colNumber);
         }
@@ -200,11 +218,11 @@ const worksheetToData = async (worksheet) => {
 		});
 	});
 
-	// Формируем массив columns, исключая пустые столбцы
+	// Form the columns array, excluding empty columns
 	worksheet.columns.forEach((col, index) => {
 		const colIndex = index + 1;
 
-		// Добавляем столбец только если он не пустой
+		// Add the column only if it is not empty
 		if (nonEmptyColumns.has(colIndex)) {
 			columns.push({
 				index: colIndex,
@@ -255,6 +273,7 @@ const xlsx2html = async (fileBytes, sheetName) => {
 	await workbook.xlsx.load(fileBytes);
 
 	const worksheet = workbook.getWorksheet(sheetName || 1);
+	console.log(`Processing worksheet: ${worksheet}`);
 	const data = await worksheetToData(worksheet);
 	const htmlTable = renderTable(data);
 
